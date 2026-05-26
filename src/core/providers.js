@@ -77,8 +77,8 @@ export function buildRoleExecutionContext(targetPath, ticketId, role) {
 
 export async function validateRoleExecutionContext(executionContext) {
   const requiredPaths = [
-    { path: executionContext.ticketDir, label: 'ticket directory', hint: 'Run package-agent start-ticket first.' },
-    { path: executionContext.roleLogPath, label: 'role log', hint: 'Run package-agent start-ticket first.' }
+    { path: executionContext.ticketDir, label: 'ticket directory', hint: 'Run team-talk start-ticket first.' },
+    { path: executionContext.roleLogPath, label: 'role log', hint: 'Run team-talk start-ticket first.' }
   ];
 
   for (const entry of requiredPaths) {

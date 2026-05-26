@@ -1,10 +1,10 @@
 {
-  "name": "package-agent",
+  "name": "team-talk",
   "version": "0.1.0",
   "description": "Bootstrap a project-local multi-agent workflow into any git repository.",
   "type": "module",
   "bin": {
-    "package-agent": "./bin/package-agent.js"
+    "team-talk": "./bin/team-talk.js"
   },
   "scripts": {
     "test": "node --test"

@@ -1,6 +1,6 @@
-# package-agent
+# team-talk
 
-`package-agent` is an npm CLI that bootstraps a project-local multi-agent workspace into any git repository. The generated workspace lives under `.agents/`, stays local by default through `.git/info/exclude`, and creates a ticket-oriented structure for the coordinator, QA, lead engineer, and database admin roles.
+`team-talk` is an npm CLI that bootstraps a project-local multi-agent workspace into any git repository. The generated workspace lives under `.agents/`, stays local by default through `.git/info/exclude`, and creates a ticket-oriented structure for the coordinator, QA, lead engineer, and database admin roles.
 
 ## Requirements
 
@@ -13,20 +13,59 @@
 Run locally from this repository:
 
 ```bash
-node ./bin/package-agent.js --help
+node ./bin/team-talk.js --help
 ```
 
 Link it globally during development:
 
 ```bash
 npm link
-package-agent --help
+team-talk --help
 ```
 
 Pack or publish for npm distribution:
 
 ```bash
 npm pack
+```
+
+## Use With PNPM In Any Existing Repo
+
+Yes. You can run this from any existing project repository as long as that repository is already initialized with git.
+
+One-off run without adding a dependency:
+
+```bash
+pnpm dlx team-talk init
+```
+
+Install as a development dependency in the current project:
+
+```bash
+pnpm add -D team-talk
+pnpm exec team-talk init
+```
+
+Install from GitHub before publishing to npm:
+
+```bash
+pnpm add -D github:YOUR_ORG/team-talk
+pnpm exec team-talk init
+```
+
+Install from a local path during development:
+
+```bash
+pnpm add -D /absolute/path/to/team-talk
+pnpm exec team-talk init
+```
+
+Then run ticket commands from that same project repository:
+
+```bash
+pnpm exec team-talk start-ticket "PROJ-123 Improve agent routing"
+pnpm exec team-talk launch-agents proj-123-improve-agent-routing
+pnpm exec team-talk status
 ```
 
 ## Command Summary
@@ -44,13 +83,13 @@ What it does:
 Terminal command:
 
 ```bash
-package-agent init --target /path/to/repo
+team-talk init --target /path/to/repo
 ```
 
 If you are already in the target repository:
 
 ```bash
-package-agent init
+team-talk init
 ```
 
 Generated paths:
@@ -80,19 +119,19 @@ What it does:
 Terminal command:
 
 ```bash
-package-agent start-ticket PROJ-123-improve-agent-routing --target /path/to/repo
+team-talk start-ticket PROJ-123-improve-agent-routing --target /path/to/repo
 ```
 
 Example from inside the repository:
 
 ```bash
-package-agent start-ticket "PROJ-123 Improve agent routing"
+team-talk start-ticket "PROJ-123 Improve agent routing"
 ```
 
 Override the branch name:
 
 ```bash
-package-agent start-ticket "PROJ-123 Improve agent routing" --branch feature/proj-123-routing
+team-talk start-ticket "PROJ-123 Improve agent routing" --branch feature/proj-123-routing
 ```
 
 Generated ticket files:
@@ -118,13 +157,13 @@ What it does today:
 Terminal command:
 
 ```bash
-package-agent launch-agents proj-123-improve-agent-routing --target /path/to/repo
+team-talk launch-agents proj-123-improve-agent-routing --target /path/to/repo
 ```
 
 Example from inside the repository:
 
 ```bash
-package-agent launch-agents proj-123-improve-agent-routing
+team-talk launch-agents proj-123-improve-agent-routing
 ```
 
 Current limitation:
@@ -141,18 +180,18 @@ Lists the ticket directories currently present under `.agents/tickets/`.
 Terminal command:
 
 ```bash
-package-agent status --target /path/to/repo
+team-talk status --target /path/to/repo
 ```
 
 If you are already in the target repository:
 
 ```bash
-package-agent status
+team-talk status
 ```
 
 ## Architecture
 
-`package-agent` uses a coordinator-first layout inside `.agents/`.
+`team-talk` uses a coordinator-first layout inside `.agents/`.
 
 - The coordinator owns ticket flow, shared context, and the handoff protocol between roles.
 - Role files are split by responsibility so each agent can work from a narrow prompt and artifact set.
@@ -165,31 +204,31 @@ Today, `launch-agents` prepares runtime files, transcript state, and VS Code tas
 Initialize the repo once:
 
 ```bash
-package-agent init
+team-talk init
 ```
 
 Start a ticket:
 
 ```bash
-package-agent start-ticket "PROJ-123 Improve agent routing"
+team-talk start-ticket "PROJ-123 Improve agent routing"
 ```
 
 Prepare the coordinator and agent runtime files and VS Code tasks:
 
 ```bash
-package-agent launch-agents proj-123-improve-agent-routing
+team-talk launch-agents proj-123-improve-agent-routing
 ```
 
 Then run the generated VS Code task:
 
 ```text
-package-agent:launch:proj-123-improve-agent-routing
+team-talk:launch:proj-123-improve-agent-routing
 ```
 
 Check current tickets:
 
 ```bash
-package-agent status
+team-talk status
 ```
 
 ## Generated Helper Scripts
@@ -214,7 +253,7 @@ Run one role terminal directly if needed:
 .agents/scripts/run-role.sh coordinator proj-123-improve-agent-routing
 ```
 
-These scripts call back into `package-agent` with the repository root as the target.
+These scripts call back into `team-talk` with the repository root as the target.
 
 ## Development
 

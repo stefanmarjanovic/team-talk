@@ -9,7 +9,7 @@ import { runInit } from '../src/commands/init.js';
 import { getAgentsRoot, getRepoTasksPath } from '../src/core/layout.js';
 
 test('runInit creates .agents workspace and excludes it from git indexing', async () => {
-  const repoDir = await fs.mkdtemp(path.join(os.tmpdir(), 'package-agent-init-'));
+  const repoDir = await fs.mkdtemp(path.join(os.tmpdir(), 'team-talk-init-'));
   spawnSync('git', ['init'], { cwd: repoDir, stdio: 'ignore' });
 
   await runInit({ targetPath: repoDir });
@@ -28,5 +28,5 @@ test('runInit creates .agents workspace and excludes it from git indexing', asyn
   const excludeContents = await fs.readFile(excludePath, 'utf8');
   const tasksContents = await fs.readFile(tasksPath, 'utf8');
   assert.match(excludeContents, /\.agents\//);
-  assert.match(tasksContents, /package-agent:launch:<ticket-slug>/);
+  assert.match(tasksContents, /team-talk:launch:<ticket-slug>/);
 });

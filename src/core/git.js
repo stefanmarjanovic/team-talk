@@ -12,7 +12,7 @@ export async function ensureGitRepository(targetPath) {
       throw new Error();
     }
   } catch {
-    throw new Error(`Expected a git repository at ${targetPath}. Initialize git before running package-agent.`);
+    throw new Error(`Expected a git repository at ${targetPath}. Initialize git before running team-talk.`);
   }
 }
 

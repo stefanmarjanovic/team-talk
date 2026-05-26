@@ -31,9 +31,9 @@ export async function runRelay({ targetPath, role, ticketId, message }) {
   const transcriptPath = getTicketTranscriptPath(targetPath, ticketSlug);
   const timestamp = new Date().toISOString();
 
-  await ensurePathExists(ticketDir, `Ticket ${ticketSlug} does not exist. Run package-agent start-ticket first.`);
-  await ensurePathExists(roleLogPath, `Role log for ${role} does not exist. Run package-agent start-ticket first.`);
-  await ensurePathExists(transcriptPath, `Transcript for ${ticketSlug} does not exist. Run package-agent start-ticket first.`);
+  await ensurePathExists(ticketDir, `Ticket ${ticketSlug} does not exist. Run team-talk start-ticket first.`);
+  await ensurePathExists(roleLogPath, `Role log for ${role} does not exist. Run team-talk start-ticket first.`);
+  await ensurePathExists(transcriptPath, `Transcript for ${ticketSlug} does not exist. Run team-talk start-ticket first.`);
 
   await Promise.all([
     appendRoleRelay(roleLogPath, role, trimmedMessage, timestamp),

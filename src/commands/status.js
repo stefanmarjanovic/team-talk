@@ -20,6 +20,6 @@ export async function runStatus({ targetPath }) {
       console.log(`- ${ticket}`);
     }
   } catch {
-    console.log('No .agents workspace found. Run `package-agent init` first.');
+    console.log('No .agents workspace found. Run `team-talk init` first.');
   }
 }

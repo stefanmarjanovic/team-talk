@@ -12,13 +12,13 @@ import { runLaunchAgents } from '../src/commands/launch-agents.js';
 import { runStartTicket } from '../src/commands/start-ticket.js';
 import { getCoordinatorRuntimePath, getLaunchManifestPath, getRepoTasksPath } from '../src/core/layout.js';
 
-const packageAgentBinPath = fileURLToPath(new URL('../bin/package-agent.js', import.meta.url));
+const packageAgentBinPath = fileURLToPath(new URL('../bin/team-talk.js', import.meta.url));
 
 test('runLaunchAgents generates runtime files and VS Code tasks for a ticket', async () => {
-  const repoDir = await fs.mkdtemp(path.join(os.tmpdir(), 'package-agent-launch-'));
+  const repoDir = await fs.mkdtemp(path.join(os.tmpdir(), 'team-talk-launch-'));
   spawnSync('git', ['init'], { cwd: repoDir, stdio: 'ignore' });
-  spawnSync('git', ['config', 'user.email', 'package-agent@example.com'], { cwd: repoDir, stdio: 'ignore' });
-  spawnSync('git', ['config', 'user.name', 'Package Agent'], { cwd: repoDir, stdio: 'ignore' });
+  spawnSync('git', ['config', 'user.email', 'team-talk@example.com'], { cwd: repoDir, stdio: 'ignore' });
+  spawnSync('git', ['config', 'user.name', 'Team Talk'], { cwd: repoDir, stdio: 'ignore' });
   await fs.writeFile(path.join(repoDir, 'README.md'), '# temp\n', 'utf8');
   spawnSync('git', ['add', 'README.md'], { cwd: repoDir, stdio: 'ignore' });
   spawnSync('git', ['commit', '-m', 'init'], { cwd: repoDir, stdio: 'ignore' });
@@ -32,20 +32,20 @@ test('runLaunchAgents generates runtime files and VS Code tasks for a ticket', a
   const manifestContents = await fs.readFile(getLaunchManifestPath(repoDir, ticketSlug), 'utf8');
   const coordinatorRuntimeContents = await fs.readFile(getCoordinatorRuntimePath(repoDir, ticketSlug), 'utf8');
 
-  assert.match(tasksContents, /package-agent:launch:proj-456-multi-terminal-launch/);
-  assert.match(tasksContents, /package-agent:coordinator:proj-456-multi-terminal-launch/);
+  assert.match(tasksContents, /team-talk:launch:proj-456-multi-terminal-launch/);
+  assert.match(tasksContents, /team-talk:coordinator:proj-456-multi-terminal-launch/);
   assert.match(tasksContents, /\.agents\/scripts\/run-role\.sh coordinator proj-456-multi-terminal-launch/);
-  assert.match(manifestContents, /package-agent:launch:proj-456-multi-terminal-launch/);
+  assert.match(manifestContents, /team-talk:launch:proj-456-multi-terminal-launch/);
   assert.match(manifestContents, /\.agents\/scripts\/relay\.sh lead-engineer proj-456-multi-terminal-launch/);
   assert.match(coordinatorRuntimeContents, /status=ready/);
   assert.match(coordinatorRuntimeContents, /provider=stub/);
 });
 
 test('run-role executes configured provider commands for coordinator and agents', async () => {
-  const repoDir = await fs.mkdtemp(path.join(os.tmpdir(), 'package-agent-run-role-'));
+  const repoDir = await fs.mkdtemp(path.join(os.tmpdir(), 'team-talk-run-role-'));
   spawnSync('git', ['init'], { cwd: repoDir, stdio: 'ignore' });
-  spawnSync('git', ['config', 'user.email', 'package-agent@example.com'], { cwd: repoDir, stdio: 'ignore' });
-  spawnSync('git', ['config', 'user.name', 'Package Agent'], { cwd: repoDir, stdio: 'ignore' });
+  spawnSync('git', ['config', 'user.email', 'team-talk@example.com'], { cwd: repoDir, stdio: 'ignore' });
+  spawnSync('git', ['config', 'user.name', 'Team Talk'], { cwd: repoDir, stdio: 'ignore' });
   await fs.writeFile(path.join(repoDir, 'README.md'), '# temp\n', 'utf8');
   spawnSync('git', ['add', 'README.md'], { cwd: repoDir, stdio: 'ignore' });
   spawnSync('git', ['commit', '-m', 'init'], { cwd: repoDir, stdio: 'ignore' });
@@ -75,7 +75,7 @@ test('run-role executes configured provider commands for coordinator and agents'
     });
 
     assert.equal(result.status, 0, result.stderr);
-    assert.match(result.stdout, /package-agent-ready/);
+    assert.match(result.stdout, /team-talk-ready/);
     assert.match(result.stdout, /provider: command/);
     assert.match(result.stdout, new RegExp(`backend:${role}:${ticketSlug}`));
   }

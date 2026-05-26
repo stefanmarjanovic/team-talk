@@ -16,7 +16,7 @@ export async function runRole({ targetPath, role, ticketId }) {
   const provider = resolveRoleProvider(agentConfig, role);
   const providerExecution = buildProviderExecution(provider, executionContext);
 
-  process.stdout.write('package-agent-ready\n');
+  process.stdout.write('team-talk-ready\n');
   process.stdout.write(`role: ${role}\n`);
   process.stdout.write(`ticket: ${ticketId}\n`);
   process.stdout.write(`provider: ${provider.adapter}\n`);

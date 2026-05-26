@@ -8,7 +8,7 @@ import { runRole } from './commands/run-role.js';
 import { runStartTicket } from './commands/start-ticket.js';
 import { runStatus } from './commands/status.js';
 
-const HELP_TEXT = `package-agent <command> [options]
+const HELP_TEXT = `team-talk <command> [options]
 
 Commands:
   init [--target <path>]               Bootstrap .agents into a git repository

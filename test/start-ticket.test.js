@@ -10,10 +10,10 @@ import { runStartTicket } from '../src/commands/start-ticket.js';
 import { getTicketDir } from '../src/core/layout.js';
 
 test('runStartTicket creates a branch and markdown files for all roles', async () => {
-  const repoDir = await fs.mkdtemp(path.join(os.tmpdir(), 'package-agent-ticket-'));
+  const repoDir = await fs.mkdtemp(path.join(os.tmpdir(), 'team-talk-ticket-'));
   spawnSync('git', ['init'], { cwd: repoDir, stdio: 'ignore' });
-  spawnSync('git', ['config', 'user.email', 'package-agent@example.com'], { cwd: repoDir, stdio: 'ignore' });
-  spawnSync('git', ['config', 'user.name', 'Package Agent'], { cwd: repoDir, stdio: 'ignore' });
+  spawnSync('git', ['config', 'user.email', 'team-talk@example.com'], { cwd: repoDir, stdio: 'ignore' });
+  spawnSync('git', ['config', 'user.name', 'Team Talk'], { cwd: repoDir, stdio: 'ignore' });
   await fs.writeFile(path.join(repoDir, 'README.md'), '# temp\n', 'utf8');
   spawnSync('git', ['add', 'README.md'], { cwd: repoDir, stdio: 'ignore' });
   spawnSync('git', ['commit', '-m', 'init'], { cwd: repoDir, stdio: 'ignore' });

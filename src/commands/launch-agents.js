@@ -21,7 +21,7 @@ export async function runLaunchAgents({ targetPath, ticketId, skipVsCodeTasks = 
     await fs.stat(ticketDir);
   } catch (error) {
     if (error.code === 'ENOENT') {
-      throw new Error(`Ticket ${ticketSlug} does not exist. Run package-agent start-ticket first.`);
+      throw new Error(`Ticket ${ticketSlug} does not exist. Run team-talk start-ticket first.`);
     }
 
     throw error;
