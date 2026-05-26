@@ -1,0 +1,26 @@
+{
+  "name": "package-agent",
+  "version": "0.1.0",
+  "description": "Bootstrap a project-local multi-agent workflow into any git repository.",
+  "type": "module",
+  "bin": {
+    "package-agent": "./bin/package-agent.js"
+  },
+  "scripts": {
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=18.17"
+  },
+  "files": [
+    "bin",
+    "src"
+  ],
+  "keywords": [
+    "agents",
+    "cli",
+    "bootstrap",
+    "workflow"
+  ],
+  "license": "MIT"
+}
