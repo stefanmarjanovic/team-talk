@@ -1,15 +1,23 @@
 import path from 'node:path';
 
+export const COORDINATOR_ROLE = 'coordinator';
+
 export const AGENT_ROLES = [
   'quality-assurance',
   'lead-engineer',
   'database-admin'
 ];
 
+export const ALL_ROLES = [COORDINATOR_ROLE, ...AGENT_ROLES];
+
 export const DEFAULT_BRANCH_PREFIX = 'ticket';
 
 export function getAgentsRoot(targetPath) {
   return path.join(targetPath, '.agents');
+}
+
+export function getAgentConfigPath(targetPath) {
+  return path.join(getAgentsRoot(targetPath), 'config.json');
 }
 
 export function getTicketsDir(targetPath) {
@@ -24,6 +32,10 @@ export function getPromptsDir(targetPath) {
   return path.join(getAgentsRoot(targetPath), 'prompts');
 }
 
+export function getPromptPath(targetPath, role) {
+  return path.join(getPromptsDir(targetPath), `${role}.md`);
+}
+
 export function getRuntimeDir(targetPath) {
   return path.join(getAgentsRoot(targetPath), 'runtime');
 }
@@ -34,6 +46,14 @@ export function getWorkspaceDir(targetPath) {
 
 export function getVsCodeDir(targetPath) {
   return path.join(getAgentsRoot(targetPath), 'vscode');
+}
+
+export function getRepoVsCodeDir(targetPath) {
+  return path.join(targetPath, '.vscode');
+}
+
+export function getRepoTasksPath(targetPath) {
+  return path.join(getRepoVsCodeDir(targetPath), 'tasks.json');
 }
 
 export function getTicketDir(targetPath, ticketSlug) {
@@ -54,6 +74,10 @@ export function getCoordinatorRuntimePath(targetPath, ticketSlug) {
 
 export function getAgentRuntimePath(targetPath, ticketSlug, role) {
   return path.join(getRuntimeDir(targetPath), `${ticketSlug}.${role}.env`);
+}
+
+export function getLaunchManifestPath(targetPath, ticketSlug) {
+  return path.join(getTicketDir(targetPath, ticketSlug), 'launch-manifest.json');
 }
 
 export function buildAgentConfig() {

@@ -3,6 +3,8 @@ import process from 'node:process';
 
 import { runInit } from './commands/init.js';
 import { runLaunchAgents } from './commands/launch-agents.js';
+import { runRelay } from './commands/relay.js';
+import { runRole } from './commands/run-role.js';
 import { runStartTicket } from './commands/start-ticket.js';
 import { runStatus } from './commands/status.js';
 
@@ -12,6 +14,8 @@ Commands:
   init [--target <path>]               Bootstrap .agents into a git repository
   start-ticket <ticket-id> [options]  Create a git branch and ticket workspace
   launch-agents <ticket-id> [options] Create runtime files for coordinator and agents
+  relay <role> <ticket-id> <message> [options] Append a coordinator relay into a role log
+  run-role <role> <ticket-id> [options] Run one role through its configured provider
   status [--target <path>]            Show the current ticket workspace summary
 
 Options:
@@ -55,11 +59,39 @@ export async function run(argv) {
 
       await runLaunchAgents({
         targetPath,
-        ticketId: parsed.positionals[0]
+        ticketId: parsed.positionals[0],
+        skipVsCodeTasks: Boolean(parsed.flags['skip-vscode-tasks'])
+      });
+      return;
+    case 'relay':
+      if (!parsed.positionals[0] || !parsed.positionals[1]) {
+        throw new Error('relay requires a <role>, <ticket-id>, and <message>.');
+      }
+
+      if (parsed.positionals.length < 3) {
+        throw new Error('relay requires a non-empty <message>.');
+      }
+
+      await runRelay({
+        targetPath,
+        role: parsed.positionals[0],
+        ticketId: parsed.positionals[1],
+        message: parsed.positionals.slice(2).join(' ')
       });
       return;
     case 'status':
       await runStatus({ targetPath });
+      return;
+    case 'run-role':
+      if (!parsed.positionals[0] || !parsed.positionals[1]) {
+        throw new Error('run-role requires a <role> and <ticket-id>.');
+      }
+
+      await runRole({
+        targetPath,
+        role: parsed.positionals[0],
+        ticketId: parsed.positionals[1]
+      });
       return;
     default:
       throw new Error(`Unknown command: ${command}\n\n${HELP_TEXT}`);

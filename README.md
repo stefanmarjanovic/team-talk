@@ -60,9 +60,11 @@ Generated paths:
 - `.agents/prompts/`
 - `.agents/scripts/start-ticket.sh`
 - `.agents/scripts/launch-agents.sh`
+- `.agents/scripts/run-role.sh`
 - `.agents/tickets/`
 - `.agents/workspace/coordinator.md`
 - `.agents/vscode/tasks.sample.json`
+- `.vscode/tasks.json`
 
 ### `start-ticket`
 
@@ -104,13 +106,14 @@ Generated ticket files:
 
 ### `launch-agents`
 
-Prepares runtime files for the coordinator and agent roles for a specific ticket.
+Prepares runtime files for the coordinator and agent roles for a specific ticket and generates real VS Code tasks for separate integrated terminals.
 
 What it does today:
 
 - Writes ready-state runtime files under `.agents/runtime/`.
 - Appends a launch event into the ticket transcript.
-- Prepares the next integration point for real terminal orchestration.
+- Writes a ticket-specific `.vscode/tasks.json` launch flow.
+- Generates a launch manifest with the exact VS Code task label to run.
 
 Terminal command:
 
@@ -127,8 +130,8 @@ package-agent launch-agents proj-123-improve-agent-routing
 Current limitation:
 
 ```text
-This command does not yet open separate terminals or invoke provider backends.
-It only prepares the runtime files and transcript updates needed for that next step.
+This command generates the VS Code tasks that open separate coordinator and agent terminals.
+It still does not invoke real provider backends; each terminal currently tails the role log/runtime files.
 ```
 
 ### `status`
@@ -147,6 +150,16 @@ If you are already in the target repository:
 package-agent status
 ```
 
+## Architecture
+
+`package-agent` uses a coordinator-first layout inside `.agents/`.
+
+- The coordinator owns ticket flow, shared context, and the handoff protocol between roles.
+- Role files are split by responsibility so each agent can work from a narrow prompt and artifact set.
+- The current built-in roles are coordinator, quality assurance, lead engineer, and database admin.
+
+Today, `launch-agents` prepares runtime files, transcript state, and VS Code task wiring for each role. The next planned layer is provider adapters that translate the same role definitions into concrete backend actions, such as terminal sessions with real agent commands, editor integrations, or hosted agent providers.
+
 ## Typical Workflow
 
 Initialize the repo once:
@@ -161,10 +174,16 @@ Start a ticket:
 package-agent start-ticket "PROJ-123 Improve agent routing"
 ```
 
-Prepare the coordinator and agent runtime files:
+Prepare the coordinator and agent runtime files and VS Code tasks:
 
 ```bash
 package-agent launch-agents proj-123-improve-agent-routing
+```
+
+Then run the generated VS Code task:
+
+```text
+package-agent:launch:proj-123-improve-agent-routing
 ```
 
 Check current tickets:
@@ -187,6 +206,12 @@ Prepare agents through the generated script:
 
 ```bash
 .agents/scripts/launch-agents.sh proj-123-improve-agent-routing
+```
+
+Run one role terminal directly if needed:
+
+```bash
+.agents/scripts/run-role.sh coordinator proj-123-improve-agent-routing
 ```
 
 These scripts call back into `package-agent` with the repository root as the target.

@@ -4,40 +4,78 @@ import {
   AGENT_ROLES,
   getAgentRuntimePath,
   getCoordinatorRuntimePath,
+  getLaunchManifestPath,
   getTicketDir,
   getTicketTranscriptPath
 } from '../core/layout.js';
+import { loadAgentConfig, resolveRoleProvider } from '../core/providers.js';
+import { normalizeTicketSlug } from '../core/tickets.js';
+import { buildLaunchInstructions, writeVsCodeTasks } from '../core/vscode.js';
 
-export async function runLaunchAgents({ targetPath, ticketId }) {
-  const ticketDir = getTicketDir(targetPath, ticketId);
+export async function runLaunchAgents({ targetPath, ticketId, skipVsCodeTasks = false }) {
+  const ticketSlug = normalizeTicketSlug(ticketId);
+  const ticketDir = getTicketDir(targetPath, ticketSlug);
+  const agentConfig = await loadAgentConfig(targetPath);
 
-  await fs.mkdir(ticketDir, { recursive: true });
+  try {
+    await fs.stat(ticketDir);
+  } catch (error) {
+    if (error.code === 'ENOENT') {
+      throw new Error(`Ticket ${ticketSlug} does not exist. Run package-agent start-ticket first.`);
+    }
+
+    throw error;
+  }
 
   const runtimeWrites = [
     fs.writeFile(
-      getCoordinatorRuntimePath(targetPath, ticketId),
-      buildRuntimeMessage('coordinator', ticketId),
+      getCoordinatorRuntimePath(targetPath, ticketSlug),
+      buildRuntimeMessage('coordinator', ticketSlug, resolveRoleProvider(agentConfig, 'coordinator').adapter),
       'utf8'
     ),
     fs.appendFile(
-      getTicketTranscriptPath(targetPath, ticketId),
-      `- Launch requested for ${ticketId}\n`,
+      getTicketTranscriptPath(targetPath, ticketSlug),
+      `- Launch requested for ${ticketSlug}\n`,
+      'utf8'
+    ),
+    fs.writeFile(
+      getLaunchManifestPath(targetPath, ticketSlug),
+      `${JSON.stringify(buildLaunchInstructions(ticketSlug), null, 2)}\n`,
       'utf8'
     )
   ];
 
   for (const role of AGENT_ROLES) {
     runtimeWrites.push(
-      fs.writeFile(getAgentRuntimePath(targetPath, ticketId, role), buildRuntimeMessage(role, ticketId), 'utf8')
+      fs.writeFile(
+        getAgentRuntimePath(targetPath, ticketSlug, role),
+        buildRuntimeMessage(role, ticketSlug, resolveRoleProvider(agentConfig, role).adapter),
+        'utf8'
+      )
     );
   }
 
   await Promise.all(runtimeWrites);
 
-  console.log(`Prepared runtime files for ${ticketId}.`);
-  console.log('Separate terminal orchestration is not implemented yet; use the generated runtime files and tasks sample as the next integration point.');
+  let tasksPath = null;
+
+  if (!skipVsCodeTasks) {
+    tasksPath = await writeVsCodeTasks(targetPath, ticketSlug);
+  }
+
+  console.log(`Prepared runtime files for ${ticketSlug}.`);
+
+  if (tasksPath) {
+    const instructions = buildLaunchInstructions(ticketSlug);
+    console.log(`Generated VS Code tasks in ${tasksPath}`);
+    console.log(`Run the VS Code task ${instructions.task} to open coordinator and agent terminals.`);
+
+    for (const relayInstruction of instructions.relayCommands) {
+      console.log(`Relay to ${relayInstruction.role}: ${relayInstruction.command}`);
+    }
+  }
 }
 
-function buildRuntimeMessage(role, ticketId) {
-  return `role=${role}\nticket=${ticketId}\nstatus=ready\n`;
+function buildRuntimeMessage(role, ticketId, providerAdapter) {
+  return `role=${role}\nticket=${ticketId}\nprovider=${providerAdapter}\nstatus=ready\n`;
 }
