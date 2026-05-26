@@ -22,5 +22,10 @@
     "bootstrap",
     "workflow"
   ],
-  "license": "MIT"
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/stefanmarjanovic/team-talk",
+    "author": "Stefan Marjanovic"
+  }
 }
