@@ -1,10 +1,10 @@
 {
-  "name": "team-talk",
+  "name": "@stefanmarjanovic/team-talk",
   "version": "0.1.0",
   "description": "Bootstrap a project-local multi-agent workflow into any git repository.",
   "type": "module",
   "bin": {
-    "team-talk": "./bin/team-talk.js"
+    "team-talk": "bin/team-talk.js"
   },
   "scripts": {
     "test": "node --test"
@@ -23,9 +23,9 @@
     "workflow"
   ],
   "license": "MIT",
+  "author": "Stefan Marjanovic",
   "repository": {
     "type": "git",
-    "url": "https://github.com/stefanmarjanovic/team-talk",
-    "author": "Stefan Marjanovic"
+    "url": "git+https://github.com/stefanmarjanovic/team-talk.git"
   }
 }

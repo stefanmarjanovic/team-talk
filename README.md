@@ -36,13 +36,13 @@ Yes. You can run this from any existing project repository as long as that repos
 One-off run without adding a dependency:
 
 ```bash
-pnpm dlx team-talk init
+pnpm dlx @stefanmarjanovic/team-talk init
 ```
 
 Install as a development dependency in the current project:
 
 ```bash
-pnpm add -D team-talk
+pnpm add -D @stefanmarjanovic/team-talk
 pnpm exec team-talk init
 ```
 
